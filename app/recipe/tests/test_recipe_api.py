@@ -11,7 +11,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.models import Recipe
-from recipe.serializer import (
+from recipe.serializers import (
     RecipeSerializer,
     RecipeDetailsSerializer
     )

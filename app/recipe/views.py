@@ -7,11 +7,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from core.models import Recipe
-from recipe import serializer
+from recipe import serializers
 
 class RecipeViewset(viewsets.ModelViewSet):
     """View or mmanage recipe apis"""
-    serializer_class= serializer.RecipeDetailsSerializer
+    serializer_class= serializers.RecipeDetailsSerializer
     queryset=Recipe.objects.all()
     authentication_classes=[TokenAuthentication]
     permission_classes =[IsAuthenticated]
@@ -22,7 +22,6 @@ class RecipeViewset(viewsets.ModelViewSet):
     
     def get_seriaizer_class(self):
         """Return serializer class for request"""
-        if self.action=='list':
-            return serializer.RecipeSerializer
-        
+        if self.action == 'list':
+            return serializers.RecipeSerializer
         return self.serializer_class
