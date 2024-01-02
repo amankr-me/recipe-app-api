@@ -23,6 +23,17 @@ class UserSerializer(serializers.ModelSerializer):
         """Create and eturn a user with encrypted password"""
         return get_user_model().objects.create_user(**validated_data)
     
+    def update(self, instance, validated_data):
+        """Update and return user."""
+        password=validated_data.pop('password',None)
+        user=super().update(instance,validated_data)
+        
+        if password:
+            user.set_password(password)
+            user.save()
+        
+        return user
+    
 
 class AuthTokenSerializer(serializers.Serializer):
     """"Serializer for the user auth token"""
@@ -31,7 +42,6 @@ class AuthTokenSerializer(serializers.Serializer):
         style={'input_type':'password'},
         trim_whitespace=False,
     )
-
     
     def validate(self,attrs):
         """Validate and authenticate the user"""
@@ -47,5 +57,5 @@ class AuthTokenSerializer(serializers.Serializer):
             msg =_("unable to authenticate with provided credentials")
             raise serializers.ValidationError(msg, code='authorization')
         
-        attrs[user]= user
+        attrs['user']= user
         return attrs
