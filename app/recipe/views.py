@@ -11,7 +11,7 @@ from recipe import serializers
 
 class RecipeViewset(viewsets.ModelViewSet):
     """View or mmanage recipe apis"""
-    serializer_class= serializers.RecipeDetailsSerializer
+    serializer_class= serializers.RecipeDetailSerializer
     queryset=Recipe.objects.all()
     authentication_classes=[TokenAuthentication]
     permission_classes =[IsAuthenticated]

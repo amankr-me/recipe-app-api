@@ -13,14 +13,14 @@ from rest_framework.test import APIClient
 from core.models import Recipe
 from recipe.serializers import (
     RecipeSerializer,
-    RecipeDetailsSerializer
+    RecipeDetailSerializer,
     )
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
 def detail_url(recipe_id):
     """Create and Return recipe detail url"""
-    return reverse('recipe:recipe-details',args=[recipe_id])
+    return reverse('recipe:recipe-detail',args=[recipe_id])
 
 
 def create_recipe(user,**params):
@@ -64,11 +64,11 @@ class PrivateRecipeApiTest(TestCase):
         
         res = self.client.get(RECIPES_URL)
         
-        recipe = Recipe.objects.all().order_by('-id')
-        serializer=RecipeSerializer(recipe,many=True)
+        recipes = Recipe.objects.all().order_by('-id')
+        serializer=RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK) 
         self.assertEqual(res.data, serializer.data)
-        
+
     def test_recipe_list_limited_to_user(self):
         """Test list of recipe is limited to authentiated user"""
         other_user=get_user_model().objects.create_user(
@@ -80,8 +80,8 @@ class PrivateRecipeApiTest(TestCase):
         
         res = self.client.get(RECIPES_URL)
         
-        recipe = Recipe.objects.filter(user=self.user)
-        serializer=RecipeSerializer(recipe,many=True)
+        recipes = Recipe.objects.filter(user=self.user)
+        serializer=RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK) 
         self.assertEqual(res.data, serializer.data)     
         
@@ -93,6 +93,6 @@ class PrivateRecipeApiTest(TestCase):
         url= detail_url(recipe.id)
         res=self.client.get(url)
         
-        serializer=RecipeDetailsSerializer(recipe)
+        serializer=RecipeDetailSerializer(recipe)
         
         self.assertEqual(res.data,serializer.data)
